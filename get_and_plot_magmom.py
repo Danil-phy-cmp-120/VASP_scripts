@@ -76,12 +76,13 @@ for p in paths:
             magmom_tot += [[float(p), get_magmom_tot(p)]]
 
 magmom_tot = np.array(magmom_tot)
-ax.plot(magmom_tot[:,0], magmom_tot[:,1]/fu, linestyle='-', label = 'Total', color = 'k', linewidth = 3)
+ax.plot(magmom_tot[:,0], magmom_tot[:,1]/fu, linestyle='-', label = 'Total', color = 'k', linewidth = 3, marker = 'o', markersize = 8)
 
 
 
 
 colors = ['r', 'g', 'b', 'aqua', 'magenta']
+markers = ['s', 'v', 'p', '^', 'h']
 
 i = 0
 j = 0
@@ -94,12 +95,12 @@ for n in range(1, sum(np.array(atoms[1], dtype = np.int))+1):
 
     magmom = np.array(magmom)
             
-    ax.plot(magmom[:,0], magmom[:,1]/fu, linestyle='-', label = atoms[0][i], color = colors[i], linewidth = 2.2)
-
     j = j + 1
     if j > int(atoms[1][i]):
         i = i + 1
         j = 1 
+
+    ax.plot(magmom[:,0], magmom[:,1]/fu, linestyle='-', label = atoms[0][i], color = colors[i], linewidth = 2.2, marker = markers[i], markersize = 7)
 
 
 #ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
