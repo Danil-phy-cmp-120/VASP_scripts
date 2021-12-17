@@ -6,7 +6,11 @@ from ase.visualize.plot import plot_atoms
 import shutil
 import os
 
-KPPRA = 1000
+KPPRA = input('Enter the approximate number of k-points per reciprocal atom (default value = 2000):\n')
+if KPPRA == '':
+    KPPRA = 2000
+else:
+    KPPRA = int(KPPRA)
 
 cell = ase.io.vasp.read_vasp("POSCAR")
 KP = KPPRA/len(cell)
