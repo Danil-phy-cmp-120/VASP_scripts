@@ -1,0 +1,30 @@
+#!/bin/bash
+#PBS -d .
+#PBS -l nodes=1:ppn=24 #:iband
+#PBS -N Rh2FeX_reg_band
+#PBS -j oe
+#PBS -l walltime=2000:00:00
+
+currDir=`pwd`
+
+LD_LIBRARY_PATH=/share/intel/mkl/lib/intel64/:$LD_LIBRARY_PATH
+. /share/intel/compilers_and_libraries/linux/mpi/intel64/bin/mpivars.sh
+export I_MPI_FALLBACK_DEVICE=disable
+export I_MPI_FABRICS=shm #:ofa
+export I_MPI_PIN=disable
+export LD_LIBRARY_PATH
+
+
+
+for f in `ls`; do 
+    if test -d "./$f"
+    then
+
+        cd $f
+        echo $f
+        mpirun  /share/vasp/vasp.6.2.0/vasp_std > vasp.out 2>&1
+       
+        cd ..
+    fi
+
+done
