@@ -67,7 +67,12 @@ def get_num_atoms(p="POSCAR"):
 
 structure = Structure.from_file('POSCAR')
 poscar = inputs.Poscar(structure)
-kpoints = inputs.Kpoints.from_file('KPOINTS').kpts
+kpoints = inputs.Kpoints.from_file('KPOINTS')
+
+
+if kpoints.style == inputs.Kpoints_supported_modes.Automatic:
+    kpoints = kpoints.automatic_density(structure, np.prod(np.array(poscar.structure.lattice.reciprocal_lattice.abc)) * kpoints.kpts[0][0]**3)
+
 
 rytoev = 13.605826
 aB = 0.529177249
@@ -75,7 +80,7 @@ cutof = np.array([np.sqrt(get_ENCUT()/rytoev) / (2*pi/(anorm/aB)) for anorm in p
 ng = get_PREC_coefficient()[0] * cutof + 0.5
 
 nbands = int(sum(get_valence_electrons()*get_num_atoms())*0.6 + sum(get_num_atoms()))
-nkdim = len(SpacegroupAnalyzer(structure).get_ir_reciprocal_mesh(kpoints))
+nkdim = len(SpacegroupAnalyzer(structure).get_ir_reciprocal_mesh(kpoints.kpts))
         
 memory = np.prod(ng) * nbands * nkdim * 16 + 4*((ng[0]*get_PREC_coefficient()[1])/2 + 1) * ng[1]*get_PREC_coefficient()[1] * ng[2]*get_PREC_coefficient()[1] *16
 memory /= 1024**3
@@ -96,4 +101,3 @@ if memory < nnodes * node_core[node][2]:
     print('Required Memory = {:.3f} Gb'.format(memory))
 else:
     print('Required Memory = {:.3f} Gb. Not enough memory on the nodes,\n increase the number of nodes to {} and use non-paralleling settings (remove NPAR, NCORE, KPAR tags from INCAR)'.format(memory, int(memory/node_core[node][2])))
-
