@@ -52,7 +52,7 @@ def get_ENCUT(p="INCAR", l="POTCAR"):
     for i in potcar:
         if i.find('ENMAX') != -1:
             if float(i.split()[2].replace(';','')) > ENCUT:
-                ENCUT = float(i.split('=')[1].replace(';',''))
+                ENCUT = float(i.split('=')[1].replace(';','').replace('ENMIN',''))
   
     return(ENCUT)
 
@@ -94,7 +94,7 @@ node_core = {'regular12':[12, 12, 11.5],'commom20':[20, 4, 63.0],'regular20':[20
 nnodes = int(np.ceil(nbands/npar/node_core[node][0]))
 
 if nnodes < node_core[node][1]:
-    print('NODES : {}\nNCORE = {}\nKPAR = {}'.format(nnodes, int(node_core[node][0]/npar), nnodes))
+    print("NODES : {}\nNCORE = {}\nKPAR = {}\ndon't use KPAR if required memory bigger than memory per one node".format(nnodes, int(node_core[node][0]/npar), nnodes))
 else:
     print('Not enough nodes to efficiently parallelize the task\n\t* select a larger NPAR\n\t* use other nodes\n\t* use non-paralleling settings (remove NPAR, NCORE, KPAR tags from INCAR)')
 if memory < nnodes * node_core[node][2]:
