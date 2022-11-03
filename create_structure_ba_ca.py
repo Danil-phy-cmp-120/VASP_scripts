@@ -4,12 +4,12 @@ import pymatgen.io.vasp.inputs as inputs
 import os
 import shutil
 
-potentials = {'Fe':'Fe_pv', 'Ga':'Ga_d'}
+potentials = {'Fe':'Fe', 'Ge':'Ge_d'}
 
 path_a0 = input('pathion\n')
 
-for i in np.arange(0.85, 1.2, 0.05):
-    for j in np.arange(0.85, 1.2, 0.05):
+for i in np.arange(0.85, 1.15, 0.05):
+    for j in np.arange(0.85, 1.15, 0.05):
     
         if not os.path.isdir('ba_ca_{}/{:.3f}/{:.3f}'.format(path_a0, i, j)):
             os.makedirs('ba_ca_{}/{:.3f}/{:.3f}'.format(path_a0, i, j))
@@ -36,9 +36,9 @@ for i in np.arange(0.85, 1.2, 0.05):
                                    'ISIF' : 2,
                                    'POTIM' : 0.1,
                                    'PREC' : 'High',
-                                   'ENCUT' : 440,
+                                   'ENCUT' : 410,
                                    'EDIFF' : 1e-8,
-                                   'EDIFFG' : 1e-2,
+                                   'EDIFFG' : -1e-2,
                                    'ISMEAR' : 1,
                                    'SIGMA' : 0.1,
                                    'ISPIN' : 2,
@@ -50,9 +50,9 @@ for i in np.arange(0.85, 1.2, 0.05):
                                    'NEDOS' : 1000,
                                    'NELM' : 101,
                                    'ALGO' : 'Normal',
-                                   'NCORE' : 10,
-                                   'KPAR' : 4,
-                                   'MAGMOM': '3*0 13*3'})
+                                   'NCORE' : 12,
+                                   '#KPAR' : 4,
+                                   'MAGMOM': '14*3 2*0'})
                        
                        
         VaspInput = inputs.VaspInput(incar, kpoints, poscar, potcar)
