@@ -11,7 +11,7 @@ for i in sorted([s for s in os.listdir('ba_ca_a0') if s.replace(".", "").isdigit
     for j in sorted([p for p in os.listdir('ba_ca_a0/{}'.format(i)) if p.replace(".", "").isdigit()]):
 
             outcar = Outcar('ba_ca_a0/{}/{}/OUTCAR'.format(i, j))     
-            data += [[i, j, outcar.final_energy]]
+            data += [[i, j, outcar.final_energy_wo_entrp]]
 
 data = np.array(data, dtype='f')
 #np.savetxt('Relax_{}_{}.dat'.format(z_atoms[i], mag[j]), data, fmt='%.3f %.6f %.3f')
