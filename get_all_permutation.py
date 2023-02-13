@@ -4,11 +4,13 @@ import os
 from pymatgen.core.structure import Structure
 import pymatgen.io.vasp.inputs as inputs 
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer, SpacegroupOperations
+from more_itertools import distinct_permutations
 
 potentials = {'Mn':'Mn_pv', 'V':'V_sv', 'Sb':'Sb', 'Ni':'Ni','Cr':'Cr_pv','Sc':'Sc_sv','As':'As','Ti':'Ti_sv','Fe':'Fe','Ru':'Ru_pv','Co':'Co', 'Ge':'Ge_d', 'Rh':'Rh_pv', 'Si':'Si', 'Ni':'Ni','P':'P', 'Ga':'Ga_d','Sn':'Sn_d'}
 
 structure_0 = Structure.from_file('POSCAR')
 position_for_permutation = [8, 9, 10, 11, 12, 13, 14, 15]
+magmom = [0,0,0,0,0,0,0,0,1, 2, 3, 4, 5, 6, 7, 8]
 
 species_for_permutation = []
 species_constant = []
@@ -22,23 +24,20 @@ sg = SpacegroupAnalyzer(structure_0)
 operations = sg.get_space_group_operations()
 
 unique_structures = []
-species_previous = []
-for n, p in enumerate(itertools.permutations(species_for_permutation)):
-    print(n)
-
+for n, p in enumerate(distinct_permutations(species_for_permutation)):
+        print(p)
+            
     species_new = species_constant + list(p)
-    if not species_new in species_previous:
-        structure = Structure(structure_0.lattice, species_new, structure_0.frac_coords)
+    structure = Structure(structure_0.lattice, species_new, structure_0.frac_coords)
 
-        flag = False
-        for us in unique_structures:
-            if operations.are_symmetrically_equivalent(structure, us):
-                flag = True
-                break
-        if flag == False:
-            unique_structures += [structure]
+    flag = False
+    for us in unique_structures:
+        if operations.are_symmetrically_equivalent(structure, us):
+            flag = True
+            break
+    if flag == False:
+        unique_structures += [structure]
 
-        species_previous += [species_new]
 
 for n, s in enumerate(unique_structures):
     if not os.path.isdir('unique_structures'):
@@ -72,7 +71,8 @@ for n, s in enumerate(unique_structures):
                           'NELM': 101,
                           'ALGO': 'Fast',
                           'NCORE': 6,
-                          'KPAR': 2})
+                          'KPAR': 2,
+                          'MAGMOM': })
 
     VaspInput = inputs.VaspInput(incar, kpoints, poscar, potcar)
     VaspInput.write_input('unique_structures/{}'.format(n))
