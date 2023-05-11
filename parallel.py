@@ -35,19 +35,22 @@ paws = {'H':'H', 'He':'He', 'Li':'Li_sv', 'Be':'Be', 'B':'B', 'C':'C', 'N':'N', 
         'Os':'Os', 'Ir':'Ir', 'Pt':'Pt', 'Au':'Au', 'Hg':'Hg', 'Tl':'Tl_d', 'Pb':'Pb_d', 'Bi':'Bi_d', 'Po':'Po_d', 'At':'At', 'Rn':'Rn',
         'Fr':'Fr_sv', 'Ra':'Ra_sv', 'Ac':'Ac', 'Th':'Th', 'Pa':'Pa', 'U':'U', 'Np':'Np', 'Pu':'Pu', 'Am':'Am', 'Cm':'Cm'}
 
-kppra = float(input('Input required KPPRA\n'))
+
 
 structure = Structure.from_file('POSCAR')
 poscar = inputs.Poscar(structure)
 incar = inputs.Incar.from_file('INCAR')
 
-kpoints = inputs.Kpoints.automatic_density(structure, kppra)
-kpoints.write_file('KPOINTS')
-
+if os.path.exists('KPOINTS'):
+   kpoints = inputs.Kpoints.from_file('KPOINTS')
+else:
+   kppra = float(input('Input required KPPRA\n'))
+   kpoints = inputs.Kpoints.automatic_density(structure, kppra)
+   kpoints.write_file('KPOINTS')
+    
 if os.path.exists('POTCAR'):
    potcar = inputs.Potcar.from_file('POTCAR') 
    potentials = {p.split('_')[0]:p for p in potcar.symbols}
-   
 else:
    potentials = [paws[s.symbol] for s in structure.types_of_species]
    potcar = inputs.Potcar(symbols=potentials, functional="PBE_54")
@@ -69,8 +72,8 @@ ng = prec_coefficient * cutof + 0.5
 nbands = int(sum(nelectrons*poscar.natoms)*0.6 + sum(poscar.natoms))
 nkdim = len(SpacegroupAnalyzer(structure).get_ir_reciprocal_mesh(kpoints.kpts))
 
-memory = np.prod(ng) * nbands * nkdim * 16 + 4*(ng[0]*prec_coefficient/2 + 1) * ng[1]*prec_coefficient * ng[2]*prec_coefficient * 16
-memory /= 1024**3
+memory_per_core = np.prod(ng) * nbands * nkdim * 16 + 4*(ng[0]*prec_coefficient/2 + 1) * ng[1]*prec_coefficient * ng[2]*prec_coefficient * 16 
+memory_per_core /= 1024**3
 
 max_nodes = int(input('Input max nodes for task (0 - no limit)\n')) 
 for k in nodes.keys():
@@ -86,8 +89,11 @@ for k in nodes.keys():
 
         nnodes = int(np.ceil(nbands_round/npar_min/nodes[k][0]))
         
+        memory = memory_per_core * nnodes * nodes[k][0]
         if memory < nnodes * nodes[k][2]:
-                print_paralel_data(k, nnodes, int(nodes[k][0]/npar_min), np.gcd(nkdim, nnodes*nodes[k][0]), memory)
+            print_paralel_data(k, nnodes, int(nodes[k][0]/npar_min), np.gcd(nkdim, nnodes*nodes[k][0]), memory)
+        else:
+            print('Not enough memory on these nodes')
 
 
 
