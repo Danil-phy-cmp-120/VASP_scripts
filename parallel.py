@@ -26,7 +26,7 @@ nodes = {'regular12':[12, 12, 11.5],'commom20':[20, 4, 63.0],'regular20':[20, 8,
          'big24':[24, 12, 126.0], 'new24':[24, 8, 188.0], 'common32':[32, 8, 188.0], 'regular32':[32, 4, 188.0]}
 
 paws = {'H':'H', 'He':'He', 'Li':'Li_sv', 'Be':'Be', 'B':'B', 'C':'C', 'N':'N', 'O':'O', 'F':'F', 'Ne':'Ne', 'Na':'Na_pv', 'Mg':'Mg',
-        'Al':'Al', 'Si':'Si', 'P':'P','S':'S', 'Cl':'Cl', 'Ar':'Ar', 'K':'K_sv', 'Ca':'Ca_sv', 'Sc':'Sc_sv', 'Ti':'Ti_sv', 'V_sv':'V_sv',
+        'Al':'Al', 'Si':'Si', 'P':'P','S':'S', 'Cl':'Cl', 'Ar':'Ar', 'K':'K_sv', 'Ca':'Ca_sv', 'Sc':'Sc_sv', 'Ti':'Ti_sv', 'V':'V_sv',
         'Cr':'Cr_pv', 'Mn':'Mn_pv', 'Fe':'Fe', 'Co':'Co', 'Ni':'Ni', 'Cu':'Cu', 'Zn':'Zn', 'Ga':'Ga_d', 'Ge':'Ge_d', 'As':'As', 'Se':'Se',
         'Br':'Br', 'Kr':'Kr', 'Rb':'Rb_sv', 'Sr':'Sr_sv', 'Y':'Y_sv', 'Zr':'Zr_sv', 'Nb':'Nb_sv', 'Mo':'Mo_sv', 'Tc':'Tc_pv', 'Ru':'Ru_pv',
         'Rh':'Rh_pv', 'Pd':'Pd', 'Ag':'Ag', 'Cd':'Cd', 'In':'In_d', 'Sn':'Sn_d', 'Sb':'Sb', 'Te':'Te', 'I':'I', 'Xe':'Xe', 'Cs':'Cs_sv',
