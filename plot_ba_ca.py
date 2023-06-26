@@ -5,16 +5,22 @@ import os
 from scipy.interpolate import griddata
 import matplotlib.pyplot as plt 
 
-data = []
+if os.path.exists('Relax.dat'):
+    data = np.loadtxt('Relax.dat')
+else:
+    data = []
 
-for i in sorted([s for s in os.listdir('ba_ca_a0') if s.replace(".", "").isdigit()]):
-    for j in sorted([p for p in os.listdir('ba_ca_a0/{}'.format(i)) if p.replace(".", "").isdigit()]):
+    for i in sorted([s for s in os.listdir('ba_ca_a0') if s.replace(".", "").isdigit()]):
+        for j in sorted([p for p in os.listdir('ba_ca_a0/{}'.format(i)) if p.replace(".", "").isdigit()]):
+            print(i, j)
+            try:
+                outcar = Outcar('ba_ca_a0/{}/{}/OUTCAR'.format(i, j))
+                data += [[i, j, outcar.final_energy_wo_entrp]]
+            except:
+                continue
 
-            outcar = Outcar('ba_ca_a0/{}/{}/OUTCAR'.format(i, j))     
-            data += [[i, j, outcar.final_energy_wo_entrp]]
-
-data = np.array(data, dtype='f')
-#np.savetxt('Relax_{}_{}.dat'.format(z_atoms[i], mag[j]), data, fmt='%.3f %.6f %.3f')
+    data = np.array(data, dtype='f')
+    np.savetxt('Relax.dat', data, fmt='%.3f %.3f %.6f')
 
 N = 100
 xi = np.linspace(data[:,0].min(), data[:,0].max(), N) 
@@ -30,7 +36,7 @@ ax.set_ylabel(r"c/a", size = 16)
 
 lev = np.linspace(np.floor(min(data[:,2])), np.around(max(data[:,2])), 30)
 cp = ax.contourf(xi, yi, zi, cmap = 'hot', levels = lev)
-cbar = plt.colorbar(cp, extend='both', shrink=0.9)#, ticks=ticks) 
+cbar = plt.colorbar(cp, extend='both', shrink=0.9)#, ticks=ticks)
 
 #  Настраиваем вид вспомогательных тиков:
 ax.tick_params(axis = 'both',    #  Применяем параметры к обеим осям
